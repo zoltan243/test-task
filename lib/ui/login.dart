@@ -26,6 +26,8 @@ class _LoginState extends State<Login>
   String _email = "";
   String _password = "";
 
+  bool _isSignInProgress = false;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -33,13 +35,18 @@ class _LoginState extends State<Login>
         child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          _emailLoginWidget(),
-          const SizedBox(height: 40.0),
-          _googleLoginButton(),
-          const SizedBox(height: 20.0),
-          _facebookLoginButton(),
-          const SizedBox(height: 20.0),
-          _registerButton(),
+          if (_isSignInProgress) ...[
+            const Center(child: CircularProgressIndicator())
+          ]
+          else ...[
+            _emailLoginWidget(),
+            const SizedBox(height: 40.0),
+            _googleLoginButton(),
+            const SizedBox(height: 20.0),
+            _facebookLoginButton(),
+            const SizedBox(height: 20.0),
+            _registerButton(),
+          ],
         ],
       )),
     );
@@ -122,7 +129,9 @@ class _LoginState extends State<Login>
 
   Future _authenticate(AuthenticationHandler auth) async
   {
+    setState(() => _isSignInProgress = true);
     String? result = await auth.signIn();
+    setState(() => _isSignInProgress = false);
     
     if (result == null){
       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Something went wrong. Sing in failed"), duration: Duration(seconds: 10)));
