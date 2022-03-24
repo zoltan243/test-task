@@ -6,7 +6,7 @@ class DatabaseHandler
 {
   final CollectionReference userCollection = FirebaseFirestore.instance.collection("users");
 
-  Future<QuerySnapshot<Object?>> get users => userCollection.get();
+  Stream<QuerySnapshot<Object?>> get users => userCollection.snapshots();
 
   Future updateUserData(SimpleUser user) async
   {

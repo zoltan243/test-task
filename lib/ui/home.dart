@@ -51,10 +51,10 @@ class _HomeState extends State<Home>
       );
   }
 
-  FutureBuilder<QuerySnapshot> bodyBuilder()
+  StreamBuilder<QuerySnapshot> bodyBuilder()
   {
-    return FutureBuilder<QuerySnapshot>(
-      future: DatabaseHandler().users,
+    return StreamBuilder<QuerySnapshot>(
+      stream: DatabaseHandler().users,
       builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot)
       {
         if (snapshot.hasData)
@@ -66,20 +66,7 @@ class _HomeState extends State<Home>
                 child: SizedBox(
                   width: MediaQuery.of(context).size.width,
                   height: MediaQuery.of(context).size.height / 10,
-                  child: Column(children: [
-                    ListTile(
-                      title: Text("Name: " + doc["name"]),
-                      subtitle: Text("Email: " + doc["email"]),
-                      tileColor: Colors.blueGrey[800],
-                      leading: CircleAvatar(
-                        radius: 30.0, 
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.circular(30.0), 
-                          child: Image.network(doc["avatar"])
-                        )
-                      )
-                    )
-                  ])
+                  child: Column(children: [createListTileItem(doc)])
                 ),
               );
             }).toList() as List<Widget>,
@@ -89,6 +76,22 @@ class _HomeState extends State<Home>
           return const Text("No Items");
         }
       },
+    );
+  }
+
+  ListTile createListTileItem(QueryDocumentSnapshot<Object?> doc)
+  {
+    return ListTile(
+      title: Text("Name: " + doc["name"]),
+      subtitle: Text("Email: " + doc["email"]),
+      tileColor: Colors.blueGrey[800],
+      leading: CircleAvatar(
+        radius: 30.0, 
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(30.0), 
+          child: Image.network(doc["avatar"])
+        )
+      )
     );
   }
 
